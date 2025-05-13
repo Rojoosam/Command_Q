@@ -12,7 +12,8 @@ extension Color {
     static let lightBlueBBVA = Color(red: 61/255, green: 136/255, blue: 192/255)
     static let azulBBVA = Color(red: 19/255, green: 49/255, blue: 96/255)
     static let greenBBVA = Color(red: 77/255, green: 170/255, blue: 103/255)
-
+    static let goldBBVA = Color(red: 156/255, green: 138/255, blue: 92/255)
+    
     static var headerGradient: LinearGradient {
         LinearGradient(
             gradient: Gradient(colors: [.azulBBVA, .lightBlueBBVA]),
