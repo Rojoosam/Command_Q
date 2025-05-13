@@ -18,24 +18,30 @@ struct GaugeView: View {
 
         return VStack {
             Text("Posición en el mercado")
-                .font(.headline)
+                .font(.title)
+                .bold()
             Text("Mi PyME vs Top 5 en el Sector")
-
-            Gauge(value: comedorQ, in: minValue...maxValue) {
-                Text("Comedor Q")
-            } currentValueLabel: {
-                Text(String(format: "%.1f", comedorQ))
-            } minimumValueLabel: {
-                Text(String(format: "%.1f", minValue))
-            } maximumValueLabel: {
-                Text(String(format: "%.1f", maxValue))
+                .font(.subheadline)
+                .italic()
+                .foregroundColor(Color.goldBBVA)
+            ZStack {
+                Gauge(value: comedorQ, in: minValue...maxValue) {
+                    Text("Comedor Q")
+                } currentValueLabel: {
+                    Text(String(format: "%.1f", comedorQ))
+                } minimumValueLabel: {
+                    Text(String(format: "%.1f", minValue))
+                } maximumValueLabel: {
+                    Text(String(format: "%.1f", maxValue))
+                }
+                .gaugeStyle(.accessoryCircular)
+                .tint(Gradient(stops: [
+                    .init(color: .red, location: 0.0),
+                    .init(color: .gray, location: 0.5),
+                    .init(color: Color.azulBBVA, location: 1.0)
+                ]))
+                .scaleEffect(3)
             }
-            .gaugeStyle(.accessoryCircular)
-            .tint(Gradient(stops: [
-                .init(color: .red, location: 0.0),
-                .init(color: .gray, location: 0.5),
-                .init(color: Color.azulBBVA, location: 1.0)
-            ]))
             .frame(width: 200, height: 200)
         }
     }

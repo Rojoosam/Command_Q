@@ -8,78 +8,87 @@
 import SwiftUI
 
 struct DynamicList: View {
-    @State private var restaurants: [Restaurant] = []
+    @Binding var restaurants: [Restaurant]
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var intervalStart = Date()
 
     var body: some View {
-        List {
-            Section(header:
-                GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-                        Color.darkBlueBBVA
-                            .frame(width: geometry.size.width, height: geometry.size.height)
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text("Actividad")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                Text("Lugar")
-                                    .font(.subheadline)
-                                    .italic()
-                                    .bold()
-                                    .foregroundColor(Color(hex: "#FFD700"))
-                            }
-                            Spacer()
-                            VStack(alignment: .trailing) {
-                                Text(Date(), style: .time)
-                                    .monospacedDigit()
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                Text("Cambio")
-                                    .font(.subheadline)
-                                    .italic()
-                                    .foregroundColor(.white)
-                            }
-                        }
-                        .padding(.vertical, 4)
-                        .padding(.horizontal)
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(spacing: 0) {
+                // Encabezado
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Actividad")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                        Text("Lugar")
+                            .font(.subheadline)
+                            .italic()
+                            .bold()
+                            .foregroundColor(Color.goldBBVA)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        Text(Date(), style: .time)
+                            .monospacedDigit()
+                            .font(.headline)
+                            .foregroundColor(.white)
+                        Text("Cambio")
+                            .font(.subheadline)
+                            .italic()
+                            .foregroundColor(.white)
                     }
                 }
-                .frame(height: 60)
-                .listRowInsets(EdgeInsets())
-            ) {
-                ForEach(sortedRestaurants.prefix(5) + extraIfNeeded) { restaurant in
-                    HStack {
-                        VStack(alignment: .leading) {
+                .padding()
+                .background(Color.azulBBVA)
+
+                // Lista de restaurantes con divisiones
+                LazyVStack(spacing: 0) {
+                    ForEach(Array((sortedRestaurants.prefix(5) + extraIfNeeded).enumerated()), id: \.element.id) { index, restaurant in
+                        VStack(spacing: 0) {
                             HStack {
-                                Text(restaurant.location)
-                                    .font(.headline)
-                                if !restaurant.name.isEmpty {
-                                    Text("– \(restaurant.name)")
-                                        .font(.headline)
+                                VStack(alignment: .leading) {
+                                    HStack {
+                                        Text(restaurant.location)
+                                            .font(.headline)
+                                        if !restaurant.name.isEmpty {
+                                            Text("– \(restaurant.name)")
+                                                .font(.headline)
+                                        }
+                                    }
+                                    Text("Restaurant")
+                                        .font(.subheadline)
+                                        .italic()
+                                        .bold()
+                                        .foregroundColor(Color.goldBBVA)
+                                }
+                                Spacer()
+                                HStack {
+                                    Text(String(format: "%.1f%%", restaurant.percentageChange))
+                                    Text(trendSymbol(for: restaurant.trend))
+                                        .foregroundColor(color(for: restaurant.trend))
                                 }
                             }
-                            Text("Restaurant")
-                                .font(.subheadline)
-                                .italic()
-                                .bold()
-                                .foregroundColor(Color(hex: "#FFD700"))
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(index == 0 ? 0 : 8)
+
+                            if index != sortedRestaurants.prefix(5).count + extraIfNeeded.count - 1 {
+                                Divider()
+                                    .padding(.horizontal)
+                            }
                         }
-                        Spacer()
-                        HStack {
-                            Text(String(format: "%.1f%%", restaurant.percentageChange))
-                            Text(trendSymbol(for: restaurant.trend))
-                                .foregroundColor(color(for: restaurant.trend))
-                        }
-                    }/*.listRowBackground(
-                        RoundedRectangle(cornerRadius: index == 0 ? 0 : 8)
-                            .fill(Color.white)
-                    )*/
+                        .padding(.bottom, 4)
+                    }
                 }
+                .background(Color.white)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                )
             }
+            .padding(.horizontal)
         }
-        .onAppear(perform: loadData)
         .onReceive(timer) { _ in
             simulateRandomSales()
             checkInterval()
@@ -112,33 +121,16 @@ struct DynamicList: View {
         }
     }
 
-    private func loadData() {
-    #if DEBUG
-        if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
-            self.restaurants = [
-                Restaurant(name: "Commedor Q", location: "Patria", isCommandQ: true, currentSales: 50, previousSales: 40),
-                Restaurant(name: "", location: "Centro", isCommandQ: false, currentSales: 30, previousSales: 20),
-                Restaurant(name: "", location: "Zapopan", isCommandQ: false, currentSales: 60, previousSales: 50),
-                Restaurant(name: "", location: "Oblatos", isCommandQ: false, currentSales: 55, previousSales: 45),
-                Restaurant(name: "", location: "Miravalle", isCommandQ: false, currentSales: 10, previousSales: 17),
-                Restaurant(name: "", location: "Minerva", isCommandQ: false, currentSales: 9, previousSales: 22),
-            ]
-            return
-        }
-    #endif
-        self.restaurants = Bundle.main.decode("restaurants.json")
-    }
-
     private func simulateRandomSales() {
         for i in restaurants.indices {
-            if Int.random(in: 1...6) == 1 { // Rough 1s–6s chance
+            if Int.random(in: 1...6) == 1 {
                 restaurants[i].currentSales += Int.random(in: 0...3)
             }
         }
     }
 
     private func checkInterval() {
-        if Date().timeIntervalSince(intervalStart) >= 10 { // Cambiar a 600
+        if Date().timeIntervalSince(intervalStart) >= 600 { // 10 minutos
             for i in restaurants.indices {
                 restaurants[i].previousSales = restaurants[i].currentSales
                 restaurants[i].currentSales = 0
@@ -146,9 +138,4 @@ struct DynamicList: View {
             intervalStart = Date()
         }
     }
-}
-
-
-#Preview {
-    DynamicList()
 }

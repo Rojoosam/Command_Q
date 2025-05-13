@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AccountCard: View {
+struct Container: View {
     var body: some View {
                 HStack {
                     VStack(alignment: .leading, spacing: 50) {
@@ -56,5 +56,5 @@ struct AccountCard: View {
 }
 
 #Preview {
-    AccountCard()
+    Container()
 }
