@@ -11,18 +11,35 @@ struct HomeView: View {
     @StateObject private var store = RestaurantStore()
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var intervalStart = Date()
+    @State private var showAnnouncement = true
+    
+    private var shouldShowAnnouncement: Bool {
+            let all = store.restaurants
+            guard
+              let comedorQ = all.first(where: { $0.isCommandQ }),
+              !all.isEmpty
+            else { return false }
+
+            // Calcula la media de percentageChange del resto
+            let total = all.map(\.percentageChange).reduce(0, +)
+            let average = total / Double(all.count)
+            return comedorQ.percentageChange < average
+        }
     
     var body: some View {
-        
-        HeaderView(title: "Home")
-        
-        Toolbar()
+            HeaderView(title: "Home")
+            Toolbar()
+
             ScrollView {
-                VStack {
-                    Container()
-                        .padding(.top, 12)
-                    GaugeView(store: store)
-                        .padding()
+                VStack(spacing: 16) {
+                    Container().padding(.top, 12)
+
+                    // 2) sólo si showAnnouncement es true
+                    if showAnnouncement {
+                        AnnouncementCard(isVisible: $showAnnouncement)
+                    }
+
+                    GaugeView(store: store).padding()
                     DynamicList(store: store)
                 }
                 .padding(.horizontal)
@@ -32,8 +49,16 @@ struct HomeView: View {
             .onAppear {
                 copyJSONFilesToDocuments()
                 loadData()
+                if shouldShowAnnouncement {
+                    showAnnouncement = true
+                }
             }
-    }
+            .onReceive(timer) { _ in 
+                if shouldShowAnnouncement && !showAnnouncement {
+                    showAnnouncement = true
+                }
+            }
+        }
     
     private func copyJSONFilesToDocuments() {
         let fileManager = FileManager.default
