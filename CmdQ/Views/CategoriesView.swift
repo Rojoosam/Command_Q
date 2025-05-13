@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct CategoriesView: View {
     private let categories: [Category] = Bundle.main.decode("categories.json")
     private let columns = [
