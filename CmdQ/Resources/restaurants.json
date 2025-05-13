@@ -1,0 +1,22 @@
+[
+  { "name": "", "location": "Centro", "isCommandQ": false },
+  { "name": "", "location": "Zapopan", "isCommandQ": false },
+  { "name": "", "location": "Providencia", "isCommandQ": false },
+  { "name": "", "location": "Tlaquepaque", "isCommandQ": false },
+  { "name": "", "location": "Tonalá", "isCommandQ": false },
+  { "name": "", "location": "Andares", "isCommandQ": false },
+  { "name": "", "location": "Chapalita", "isCommandQ": false },
+  { "name": "", "location": "Oblatos", "isCommandQ": false },
+  { "name": "", "location": "Americana", "isCommandQ": false },
+  { "name": "", "location": "Santa Tere", "isCommandQ": false },
+  { "name": "", "location": "Colomos", "isCommandQ": false },
+  { "name": "", "location": "Loma Bonita", "isCommandQ": false },
+  { "name": "", "location": "Jardines del Sol", "isCommandQ": false },
+  { "name": "", "location": "Miravalle", "isCommandQ": false },
+  { "name": "", "location": "Tetlán", "isCommandQ": false },
+  { "name": "", "location": "Huentitán", "isCommandQ": false },
+  { "name": "", "location": "San Juan de Dios", "isCommandQ": false },
+  { "name": "", "location": "Minerva", "isCommandQ": false },
+  { "name": "", "location": "Polanco", "isCommandQ": false },
+  { "name": "Commedor Q", "location": "Patria", "isCommandQ": true }
+]
