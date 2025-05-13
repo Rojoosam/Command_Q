@@ -20,12 +20,20 @@ struct ChecklistItem: Identifiable, Equatable {
 // MARK: - Checklist View
 
 struct ChecklistView: View {
+    @State private var showDatePicker = false
+    @State private var selectedDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
     @State private var tipoPersona: TipoPersona = .pfae
     @State private var items: [ChecklistItem] = []
     @State private var navigateToMap: Bool = false
     @State private var navigateToLogin: Bool = false
 
     var body: some View {
+        NavigationLink(
+            destination: LoginView(),
+            isActive: $navigateToLogin
+        ) { EmptyView() }
+        .hidden()
+        
         NavigationStack {
             VStack(spacing: 16) {
                 HeaderView(title: "Checklist")
@@ -106,14 +114,12 @@ struct ChecklistView: View {
                 }
 
                 if completedCount == items.count && !items.isEmpty {
-                    NavigationLink(destination: LoginView(), isActive: $navigateToLogin) {
-                        Button("Continuar con el proceso") {
-                            navigateToLogin = true
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.greenBBVA)
-                        .padding(.bottom, 20)
+                    Button("Continuar con el proceso") {
+                        showDatePicker = true
                     }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.greenBBVA)
+                    .padding(.bottom, 20)
                 }
 
                 Spacer()
@@ -127,12 +133,50 @@ struct ChecklistView: View {
             }
             .fullScreenCover(isPresented: $navigateToMap) {
                 MapView()
+            }.sheet(isPresented: $showDatePicker) {
+                VStack(spacing: 16) {
+                    Text("Elige la fecha de tu cita con el asesor")
+                        .font(.headline)
+                    DatePicker(
+                        "",
+                        selection: $selectedDate,
+                        in: allowedDateRange,
+                        displayedComponents: [.date]
+                    )
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
+                    
+                    Button("Confirmar") {
+                        showDatePicker = false
+                        navigateToLogin = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.greenBBVA)
+                    
+                    Text(
+                        selectedDate,
+                        format: .dateTime
+                            .weekday(.wide)
+                            .day(.defaultDigits)
+                            .month(.wide)
+                            .year()
+                    )
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                }
+                .padding()
             }
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: .white))
     }
 
+    private var allowedDateRange: ClosedRange<Date> {
+        let min = Calendar.current.date(byAdding: .day, value: 7, to: Date())!
+        return min...Date.distantFuture
+    }
+    
     // MARK: - Checklist Data Source
 
     private func updateChecklist() {
