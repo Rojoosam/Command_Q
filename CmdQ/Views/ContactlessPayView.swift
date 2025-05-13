@@ -16,52 +16,138 @@ struct SlideDownCardView: View {
                 .frame(width: 80, height: 80)
                 .foregroundColor(Color.lightBlueBBVA)
         }
+        .padding()
         .frame(maxWidth: 100, maxHeight: 100)
         .background(.ultraThinMaterial)
         .cornerRadius(16)
         .shadow(radius: 10)
         .padding(.horizontal, 20)
-
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
 }
 
 
 struct ContactlessPayView: View {
     @State private var showCard = false
-
-        var body: some View {
-            VStack{
-                
-                if showCard {
-                    SlideDownCardView()
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                        .zIndex(1)
+    @State private var amountInput: String = ""
+    @State private var selectedOption: String? = nil
+    
+    
+    let columns = [GridItem(), GridItem(), GridItem()]
+    
+    var body: some View {
+        VStack() {
+            
+            Spacer(minLength: 100)
+            
+            if showCard {
+                SlideDownCardView()
+                    .zIndex(1)
+            }
+            
+            Spacer(minLength: 100)
+            
+            HStack(spacing: 20) {
+                Button("Débito") {
+                    selectedOption = "Débito"
                 }
+                .padding()
+                .font(.title2)
+                .foregroundStyle(Color.white)
+                .background(selectedOption == "Débito" ? Color.green : Color.gray)
+                .cornerRadius(25.0)
+                .frame(width: 140, height: 50)
                 
-                ZStack {
-                    Color.white.ignoresSafeArea()
-
-                    Button("Trigger Slide Down") {
-                        withAnimation(.spring()) {
-                            showCard = true
-                        }
-                        
-                        // Auto-hide after 3 seconds
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            withAnimation(.spring()) {
-                                showCard = false
-                            }
-                        }
-                    }
-                    .font(.title)
-
+                Button("Crédito") {
+                    selectedOption = "Crédito"
+                }
+                .padding()
+                .font(.title2)
+                .foregroundStyle(Color.white)
+                .background(selectedOption == "Crédito" ? Color.green : Color.gray)
+                .cornerRadius(25.0)
+                .frame(width: 140, height: 50)
+            }
+            .frame(maxWidth: .infinity)
+            
+            
+            Text("$\(amountInput)")
+                .font(.largeTitle)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(style: StrokeStyle(lineWidth: 1)))
+                .padding()
+            
+            LazyVGrid(columns: columns) {
+                ForEach(1...9, id: \.self) { value in
+                    NumberButton(number: "\(value)")
                 }
             }
-            .animation(.spring(response: 0.5, dampingFraction: 0.85), value: showCard)
-            .navigationBarBackButtonHidden(true)
-            .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: .white))
+            
+            HStack {
+                NumberButton(number: ".").padding(.leading)
+                NumberButton(number: "0").padding(.horizontal, 42)
+                NumberButton(number: "delete.backward")
+                    .padding(.trailing)
+                
+            }
+            .padding(.vertical)
+            
+            Button("Confirmar") {
+                withAnimation(.spring()) {
+                    showCard = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    withAnimation(.spring()) {
+                        showCard = false
+                    }
+                }
+            }.padding()
+                .font(.title)
+                .foregroundStyle(Color.white)
+                .background(Color.azulBBVA)
+                .cornerRadius(25.0)
+                .frame(width: 300, height: 50)
+            
+        }.padding(.horizontal, 24.0)
+    }
+    
+    func NumberButton(number: String) -> some View {
+        Button(action: {
+            switch number {
+            case "delete.backward":
+                if !amountInput.isEmpty {
+                    amountInput.removeLast()
+                }
+            case ".":
+                if !amountInput.contains(".") {
+                    amountInput.append(".")
+                }
+            default:
+                amountInput.append(number)
+            }
+        }) {
+            ZStack {
+                Circle()
+                    .frame(width: 70, height: 70)
+                    .foregroundStyle(Color.lightBlueBBVA)
+                
+                if number == "delete.backward" {
+                    Image(systemName: "delete.backward")
+                        .font(.title)
+                        .foregroundStyle(.white)
+                } else {
+                    Text(number)
+                        .font(.title)
+                        .foregroundStyle(.white)
+                }
+            }
         }
+    }
+    
+    
 }
+
 
 #Preview {
     ContactlessPayView()
