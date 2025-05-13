@@ -128,6 +128,8 @@ struct ChecklistView: View {
             .fullScreenCover(isPresented: $navigateToMap) {
                 MapView()
             }
+                MapView()
+            }
         }
     }
 
