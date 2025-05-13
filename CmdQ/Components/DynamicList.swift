@@ -1,0 +1,7 @@
+//
+//  DynamicList.swift
+//  CmdQ
+//
+//  Created by Samuel Aarón Flores Montemayor on 12/05/25.
+//
+

@@ -1,0 +1,8 @@
+[
+  { "id": 1, "title": "Tecnología",  "iconName": "desktopcomputer" },
+  { "id": 2, "title": "Salud",       "iconName": "heart.text.square" },
+  { "id": 3, "title": "Deportes",    "iconName": "sportscourt" },
+  { "id": 4, "title": "Educación",   "iconName": "book.closed" },
+  { "id": 5, "title": "Viajes",      "iconName": "airplane"   },
+  { "id": 6, "title": "Cocina",      "iconName": "fork.knife" }
+]

@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct CmdQApp: App {
+    @StateObject private var session = Session()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if session.isLoggedIn {
+                MainTabView()
+            } else {
+                LoginView().environmentObject(session)
+            }
         }
     }
 }
