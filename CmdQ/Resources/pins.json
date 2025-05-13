@@ -1,0 +1,34 @@
+{
+  "response": {
+    "nearbyPins": [
+      {
+        "longitude": "-103.3918",
+        "latitude": "20.6597",
+        "color": "green",
+        "message": "Notaría Centro Guadalajara",
+        "name": "Notaría Centro"
+      },
+      {
+        "longitude": "-103.3496",
+        "latitude": "20.6770",
+        "color": "green",
+        "message": "Notaría Chapultepec",
+        "name": "Notaría Chapultepec"
+      },
+      {
+        "longitude": "-103.3510",
+        "latitude": "20.6539",
+        "color": "green",
+        "message": "Notaría Americana",
+        "name": "Notaría Americana"
+      },
+      {
+        "longitude": "-103.3963",
+        "latitude": "20.6720",
+        "color": "green",
+        "message": "Notaría Zapopan",
+        "name": "Notaría Zapopan"
+      }
+    ]
+  }
+}
