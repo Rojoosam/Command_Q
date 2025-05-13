@@ -29,33 +29,9 @@
 		BD1B8DA72DD021B80077D81E /* CmdQUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CmdQUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BD78F1562DD2CCB500C9BB8B /* Exceptions for "CmdQ" folder in "CmdQ" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				.gitignore,
-			);
-			target = BD1B8D8F2DD021B50077D81E /* CmdQ */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		BD78F1572DD2CCB500C9BB8B /* Exceptions for "CmdQ" folder in "Compile Sources" phase from "CmdQ" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = BD1B8D8C2DD021B50077D81E /* Sources */;
-			membershipExceptions = (
-				.gitignore,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BD1B8D922DD021B50077D81E /* CmdQ */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				BD78F1562DD2CCB500C9BB8B /* Exceptions for "CmdQ" folder in "CmdQ" target */,
-				BD78F1572DD2CCB500C9BB8B /* Exceptions for "CmdQ" folder in "Compile Sources" phase from "CmdQ" target */,
-			);
 			path = CmdQ;
 			sourceTree = "<group>";
 		};
