@@ -14,6 +14,7 @@ struct CmdQApp: App {
     var body: some Scene {
         WindowGroup {
             if session.isLoggedIn {
+                //MapView()
                 MainTabView()
             } else {
                 LoginView().environmentObject(session)
