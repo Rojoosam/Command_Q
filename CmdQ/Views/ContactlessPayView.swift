@@ -28,6 +28,7 @@ struct SlideDownCardView: View {
 
 
 struct ContactlessPayView: View {
+    @State private var navigateToLogin: Bool = false
     @State private var showCard = false
     @State private var amountInput: String = ""
     @State private var selectedOption: String? = nil
@@ -37,6 +38,13 @@ struct ContactlessPayView: View {
     
     var body: some View {
         VStack() {
+            NavigationLink(
+                            destination: GestionFiscalView(),
+                            isActive: $navigateToLogin
+            ) {
+                EmptyView()
+            }
+            .hidden()
             
             Spacer(minLength: 100)
             
@@ -93,13 +101,16 @@ struct ContactlessPayView: View {
             }
             .padding(.vertical)
             
-            Button("Confirmar") {
+            Button("Confirmar") { 
                 withAnimation(.spring()) {
                     showCard = true
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                     withAnimation(.spring()) {
                         showCard = false
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        handleLogin()
                     }
                 }
             }.padding()
@@ -110,6 +121,10 @@ struct ContactlessPayView: View {
                 .frame(width: 300, height: 50)
             
         }.padding(.horizontal, 24.0)
+    }
+    
+    private func handleLogin() {
+        navigateToLogin = true
     }
     
     func NumberButton(number: String) -> some View {
