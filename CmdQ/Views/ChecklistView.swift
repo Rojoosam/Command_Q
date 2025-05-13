@@ -129,6 +129,8 @@ struct ChecklistView: View {
                 MapView()
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: .white))
     }
 
     // MARK: - Checklist Data Source
