@@ -19,7 +19,7 @@ struct LoginView: View {
     var body: some View {
         VStack {
             NavigationLink(
-                            destination: HomeView()
+                            destination: SecureHomeView()
                                 .navigationBarHidden(true),
                             isActive: $navigateToHome
             ) {
@@ -55,16 +55,16 @@ struct LoginView: View {
                 
                 HStack {
                     Spacer()
-                    NavigationLink(destination: RoadmapView()) {
-                        Text("¿Quieres ayuda para registrar tu empresa?")
-                            .foregroundColor(Color.azulBBVA)
-                            .multilineTextAlignment(.trailing)
-                            .lineLimit(2)
-                            .frame(
-                                width: UIScreen.main.bounds.width * 0.75,
-                                alignment: .trailing
-                            )
-                    }
+//                    NavigationLink(destination: RoadmapView()) {
+//                        Text("¿Quieres ayuda para registrar tu empresa?")
+//                            .foregroundColor(Color.azulBBVA)
+//                            .multilineTextAlignment(.trailing)
+//                            .lineLimit(2)
+//                            .frame(
+//                                width: UIScreen.main.bounds.width * 0.75,
+//                                alignment: .trailing
+//                            )
+//                    }
                 }
                 .padding(.top, 8)
                 
