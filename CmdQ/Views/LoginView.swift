@@ -119,6 +119,8 @@ struct LoginView: View {
                 }
             }.padding()
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: .clear))
         Spacer()
     }
     

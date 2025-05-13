@@ -16,9 +16,10 @@ struct RoadmapView: View {
         VStack{
             
             NavigationLink(
-                            destination: ChecklistView(),
+                destination: ChecklistView(),
+                //destination: ContactlessPayView(),
                                 //.navigationBarHidden(true),
-                            isActive: $navigateToChecklist
+                isActive: $navigateToChecklist
             ) {
                 EmptyView()
             }

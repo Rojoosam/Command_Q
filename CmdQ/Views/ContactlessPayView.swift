@@ -39,7 +39,7 @@ struct ContactlessPayView: View {
     var body: some View {
         VStack() {
             NavigationLink(
-                            destination: GestionFiscalView(),
+                            destination: LoginView(),
                             isActive: $navigateToLogin
             ) {
                 EmptyView()
@@ -120,7 +120,10 @@ struct ContactlessPayView: View {
                 .cornerRadius(25.0)
                 .frame(width: 300, height: 50)
             
-        }.padding(.horizontal, 24.0)
+        }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: Color.azulBBVA))
+        .padding(.horizontal, 24.0)
     }
     
     private func handleLogin() {
