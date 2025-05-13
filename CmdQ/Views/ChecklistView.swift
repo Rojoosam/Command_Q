@@ -32,11 +32,14 @@ struct ChecklistView: View {
 
     var body: some View {
         VStack(spacing: 16) {
+            HeaderView(title: "BBVA")
+            
             Text("¡Prepárate para formalizar tu negocio!")
                 .font(.title2)
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
                 .padding(.top, 20)
+                .foregroundStyle(Color.azulBBVA)
 
             Picker("Tipo de persona", selection: $tipoPersona) {
                 ForEach(TipoPersona.allCases) { tipo in

@@ -29,22 +29,9 @@
 		BD1B8DA72DD021B80077D81E /* CmdQUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CmdQUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		BDBE86562DD3AD3C00159178 /* Exceptions for "CmdQ" folder in "Compile Sources" phase from "CmdQ" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = BD1B8D8C2DD021B50077D81E /* Sources */;
-			membershipExceptions = (
-				Resources/pins.json,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BD1B8D922DD021B50077D81E /* CmdQ */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				BDBE86562DD3AD3C00159178 /* Exceptions for "CmdQ" folder in "Compile Sources" phase from "CmdQ" target */,
-			);
 			path = CmdQ;
 			sourceTree = "<group>";
 		};

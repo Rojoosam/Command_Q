@@ -13,14 +13,18 @@ struct GestionFiscalView: View {
     @State private var isFileImporterPresented = false
 
     var body: some View {
+
+        VStack {
+            HeaderView(title: "Gestión Fiscal")
+        }
+
         ScrollView {
-            VStack(spacing: 28) {
-                // Título principal
-                Text("Gestión Fiscal")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.darkBlueBBVA)
-                    .padding(.top)
+
+
+
+
+            VStack(spacing: 16) {   
+
 
                 // Sección: Carga de factura
                 VStack(alignment: .leading, spacing: 12) {
@@ -38,7 +42,6 @@ struct GestionFiscalView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.lightBlueBBVA)
                         .foregroundColor(.white)
-                        .cornerRadius(10)
                     }
 
                     if let fileName = selectedFileURL?.lastPathComponent {
@@ -127,7 +130,6 @@ struct GestionFiscalView: View {
                     .frame(maxWidth: .infinity)
                     .background(Color.azulBBVA)
                     .foregroundColor(.white)
-                    .cornerRadius(10)
                 }
 
                 Spacer()
@@ -160,7 +162,7 @@ struct GastoDeducible {
 let gastosEjemplo: [GastoDeducible] = [
     GastoDeducible(nombre: "Pago de servicios de internet", monto: 750.00, categoria: "Servicios"),
     GastoDeducible(nombre: "Gasolina para reparto", monto: 2_100.00, categoria: "Transporte"),
-    GastoDeducible(nombre: "Papelería y oficina", monto: 450.00, categoria: "Insumos"),
+    GastoDeducible(nombre: "Productos de limpieza", monto: 450.00, categoria: "Insumos"),
     GastoDeducible(nombre: "Honorarios contables", monto: 1_500.00, categoria: "Profesionales"),
     GastoDeducible(nombre: "Publicidad en redes sociales", monto: 3_700.00, categoria: "Marketing")
 ]
@@ -168,3 +170,4 @@ let gastosEjemplo: [GastoDeducible] = [
 #Preview {
     GestionFiscalView()
 }
+
