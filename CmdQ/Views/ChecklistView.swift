@@ -1,10 +1,3 @@
-//
-//  ChecklistView.swift
-//  CmdQ
-//
-//  Created by Alumno on 12/05/25.
-//
-
 import SwiftUI
 
 // MARK: - Enum for TipoPersona
@@ -29,90 +22,112 @@ struct ChecklistItem: Identifiable, Equatable {
 struct ChecklistView: View {
     @State private var tipoPersona: TipoPersona = .pfae
     @State private var items: [ChecklistItem] = []
+    @State private var navigateToMap: Bool = false
+    @State private var navigateToLogin: Bool = false
 
     var body: some View {
-        VStack(spacing: 16) {
-            HeaderView(title: "BBVA")
-            
-            Text("¡Prepárate para formalizar tu negocio!")
-                .font(.title2)
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
-                .padding(.top, 20)
-                .foregroundStyle(Color.azulBBVA)
+        NavigationStack {
+            VStack(spacing: 16) {
+                HeaderView(title: "Checklist")
 
-            Picker("Tipo de persona", selection: $tipoPersona) {
-                ForEach(TipoPersona.allCases) { tipo in
-                    Text(tipo.rawValue).tag(tipo)
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(.horizontal)
+                Text("¡Prepárate para formalizar tu negocio!")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 20)
+                    .foregroundStyle(Color.azulBBVA)
 
-            let completedCount = items.filter { $0.isCompleted }.count
-            let progress = items.isEmpty ? 0 : CGFloat(completedCount) / CGFloat(items.count)
-
-            VStack {
-                CircularProgress(
-                    progress: progress,
-                    lineWidth: 10,
-                    gradient: LinearGradient(colors: [.lightBlueBBVA, .greenBBVA], startPoint: .top, endPoint: .bottom),
-                    backgroundColor: .gray.opacity(0.2),
-                    fillAxis: .horizontal
-                )
-                .frame(width: 120, height: 120)
-
-                Text("\(completedCount) de \(items.count) completados")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-
-            ScrollView {
-                VStack(spacing: 12) {
-                    ForEach($items) { $item in
-                        HStack(alignment: .top, spacing: 12) {
-                            Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(item.isCompleted ? .greenBBVA : .gray)
-                                .onTapGesture {
-                                    item.isCompleted.toggle()
-                                }
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(item.title)
-                                    .font(.body)
-                                    .fontWeight(.semibold)
-
-                                Text(item.description)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-
-                            Spacer()
-                        }
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color(.systemBackground))
-                                .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 2)
-                        )
+                Picker("Tipo de persona", selection: $tipoPersona) {
+                    ForEach(TipoPersona.allCases) { tipo in
+                        Text(tipo.rawValue).tag(tipo)
                     }
                 }
+                .pickerStyle(SegmentedPickerStyle())
                 .padding(.horizontal)
-                .padding(.bottom, 16)
-            }
 
-            Spacer()
-        }
-        .background(Color(.systemGroupedBackground))
-        .navigationBarBackButtonHidden(true)
-        .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: .white))
-        .onAppear {
-            updateChecklist()
-        }
-        .onChange(of: tipoPersona) {
-            updateChecklist()
+                let completedCount = items.filter { $0.isCompleted }.count
+                let progress = items.isEmpty ? 0 : CGFloat(completedCount) / CGFloat(items.count)
+
+                VStack {
+                    CircularProgress(
+                        progress: progress,
+                        lineWidth: 10,
+                        gradient: LinearGradient(colors: [.lightBlueBBVA, .greenBBVA], startPoint: .top, endPoint: .bottom),
+                        backgroundColor: .gray.opacity(0.2),
+                        fillAxis: .horizontal
+                    )
+                    .frame(width: 120, height: 120)
+
+                    Text("\(completedCount) de \(items.count) completados")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+
+                ScrollView {
+                    VStack(spacing: 12) {
+                        ForEach($items) { $item in
+                            HStack(alignment: .top, spacing: 12) {
+                                Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(item.isCompleted ? .greenBBVA : .gray)
+                                    .onTapGesture {
+                                        item.isCompleted.toggle()
+                                    }
+
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(item.title)
+                                        .font(.body)
+                                        .fontWeight(.semibold)
+
+                                    formattedDescription(item.description)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .onTapGesture {
+                                            if item.description.localizedCaseInsensitiveContains("SAT") ||
+                                                item.description.localizedCaseInsensitiveContains("notaria") {
+                                                navigateToMap = true
+                                            }
+                                        }
+                                }
+
+                                Spacer()
+                            }
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color(.systemBackground))
+                                    .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 2)
+                            )
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 16)
+                }
+
+                if completedCount == items.count && !items.isEmpty {
+                    NavigationLink(destination: LoginView(), isActive: $navigateToLogin) {
+                        Button("Continuar con el proceso") {
+                            navigateToLogin = true
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.greenBBVA)
+                        .padding(.bottom, 20)
+                    }
+                }
+
+                Spacer()
+            }
+            .background(Color(.systemGroupedBackground))
+            .onAppear {
+                updateChecklist()
+            }
+            .onChange(of: tipoPersona) {
+                updateChecklist()
+            }
+            .fullScreenCover(isPresented: $navigateToMap) {
+                MapView()
+            }
         }
     }
 
@@ -141,7 +156,34 @@ struct ChecklistView: View {
             ]
         }
     }
+
+    // MARK: - Formatear palabras clave como links
+
+    private func formattedDescription(_ text: String) -> Text {
+        let words = text.components(separatedBy: " ")
+
+        var result = Text("")
+
+        for (index, word) in words.enumerated() {
+            let spacing = index > 0 ? " " : ""
+            let isLink = word.localizedCaseInsensitiveContains("SAT") ||
+                         word.localizedCaseInsensitiveContains("notaria") ||
+                         word.localizedCaseInsensitiveContains("notarial")
+
+            if isLink {
+                result = result + Text(spacing + word)
+                    .foregroundColor(.azulBBVA)
+                    .underline()
+            } else {
+                result = result + Text(spacing + word)
+            }
+        }
+
+        return result
+    }
 }
+
+// MARK: - Preview
 
 #Preview {
     ChecklistView()
