@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct GaugeView: View {
-    @Binding var restaurants: [Restaurant]
+    @ObservedObject var store: RestaurantStore
 
     var body: some View {
-        let values = restaurants.map { $0.percentageChange }
+        let values = store.restaurants.map { $0.percentageChange }
         let minValue = values.min() ?? 0
         let maxValue = values.max() ?? 100
-        let comedorQ = restaurants.first(where: { $0.isCommandQ })?.percentageChange ?? 0
+        let comedorQ = store.restaurants.first(where: { $0.isCommandQ })?.percentageChange ?? 0
 
         return VStack {
             Text("Posición en el mercado")

@@ -8,8 +8,19 @@
 import SwiftUI
 
 struct Toolbar: View {
+    @State private var navigateToTaxDeduction: Bool = false
+    
     var body: some View {
         HStack {
+            NavigationLink(
+                            destination: GestionFiscalView(),
+                                //.navigationBarHidden(true),
+                            isActive: $navigateToTaxDeduction
+            ) {
+                EmptyView()
+            }
+            .hidden()
+            
             Spacer()
             Button(action: {}) {
                 VStack {
@@ -29,7 +40,7 @@ struct Toolbar: View {
                 }
             }
             Spacer()
-            Button(action: {}) {
+            Button(action: handleTaxDeductions) {
                 VStack {
                     Image(systemName: "dollarsign.arrow.trianglehead.counterclockwise.rotate.90")
                         .font(.title2)
@@ -52,6 +63,10 @@ struct Toolbar: View {
         .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial)
         .foregroundColor(.primary)
+    }
+    
+    private func handleTaxDeductions() {
+        navigateToTaxDeduction = true
     }
 }
 

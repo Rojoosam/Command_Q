@@ -1,4 +1,3 @@
-//
 //  DynamicList.swift
 //  CmdQ
 //
@@ -8,7 +7,7 @@
 import SwiftUI
 
 struct DynamicList: View {
-    @Binding var restaurants: [Restaurant]
+    @ObservedObject var store: RestaurantStore
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var intervalStart = Date()
 
@@ -42,43 +41,15 @@ struct DynamicList: View {
                 .padding()
                 .background(Color.azulBBVA)
 
-                // Lista de restaurantes con divisiones
+                // Lista de restaurantes con RestaurantRow
                 LazyVStack(spacing: 0) {
-                    ForEach(Array((sortedRestaurants.prefix(5) + extraIfNeeded).enumerated()), id: \.element.id) { index, restaurant in
-                        VStack(spacing: 0) {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    HStack {
-                                        Text(restaurant.location)
-                                            .font(.headline)
-                                        if !restaurant.name.isEmpty {
-                                            Text("– \(restaurant.name)")
-                                                .font(.headline)
-                                        }
-                                    }
-                                    Text("Restaurant")
-                                        .font(.subheadline)
-                                        .italic()
-                                        .bold()
-                                        .foregroundColor(Color.goldBBVA)
-                                }
-                                Spacer()
-                                HStack {
-                                    Text(String(format: "%.1f%%", restaurant.percentageChange))
-                                    Text(trendSymbol(for: restaurant.trend))
-                                        .foregroundColor(color(for: restaurant.trend))
-                                }
-                            }
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(index == 0 ? 0 : 8)
-
-                            if index != sortedRestaurants.prefix(5).count + extraIfNeeded.count - 1 {
-                                Divider()
-                                    .padding(.horizontal)
-                            }
-                        }
-                        .padding(.bottom, 4)
+                    let displayed = sortedRestaurants.prefix(5) + extraIfNeeded
+                    ForEach(Array(displayed.enumerated()), id: \.element.id) { index, restaurant in
+                        RestaurantRow(
+                            restaurant: restaurant,
+                            isFirst: index == 0,
+                            isLast: index == displayed.count - 1
+                        )
                     }
                 }
                 .background(Color.white)
@@ -96,11 +67,11 @@ struct DynamicList: View {
     }
 
     private var sortedRestaurants: [Restaurant] {
-        restaurants.sorted { $0.percentageChange > $1.percentageChange }
+        store.restaurants.sorted { $0.percentageChange > $1.percentageChange }
     }
 
     private var extraIfNeeded: [Restaurant] {
-        guard let q = restaurants.first(where: { $0.isCommandQ }),
+        guard let q = store.restaurants.first(where: { $0.isCommandQ }),
               !sortedRestaurants.prefix(5).contains(where: { $0.id == q.id }) else { return [] }
         return [q]
     }
@@ -122,18 +93,23 @@ struct DynamicList: View {
     }
 
     private func simulateRandomSales() {
-        for i in restaurants.indices {
+        for i in store.restaurants.indices {
+            let prev = store.restaurants[i].currentSales
+            var next = prev
             if Int.random(in: 1...6) == 1 {
-                restaurants[i].currentSales += Int.random(in: 0...3)
+                next += Int.random(in: 0...3)
             }
+            store.restaurants[i].previousSales = prev
+            store.restaurants[i].currentSales = next
         }
+        store.objectWillChange.send()
     }
 
     private func checkInterval() {
-        if Date().timeIntervalSince(intervalStart) >= 600 { // 10 minutos
-            for i in restaurants.indices {
-                restaurants[i].previousSales = restaurants[i].currentSales
-                restaurants[i].currentSales = 0
+        if Date().timeIntervalSince(intervalStart) >= 30 { // 10 minutes
+            for i in store.restaurants.indices {
+                store.restaurants[i].previousSales = store.restaurants[i].currentSales
+                store.restaurants[i].currentSales = 0
             }
             intervalStart = Date()
         }

@@ -58,6 +58,8 @@ struct ContactlessPayView: View {
                 }
             }
             .animation(.spring(response: 0.5, dampingFraction: 0.85), value: showCard)
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: .white))
         }
 }
 

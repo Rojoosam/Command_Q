@@ -5,15 +5,36 @@
 //  Created by Samuel Aarón Flores Montemayor on 10/05/25.
 //
 
+// LoginView.swift
+
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject private var session: Session
     @State private var email: String = ""
     @State private var password: String = ""
-    @EnvironmentObject private var session: Session
+    @State private var navigateToHome = false
+    @State private var navigateToPayMethod = false
     
     var body: some View {
         VStack {
+            NavigationLink(
+                            destination: HomeView()
+                                .navigationBarHidden(true),
+                            isActive: $navigateToHome
+            ) {
+                EmptyView()
+            }
+            .hidden()
+            NavigationLink(
+                            destination: PayMethodView()
+                                .navigationBarHidden(false),
+                            isActive: $navigateToPayMethod
+            ) {
+                EmptyView()
+            }
+            .hidden()
+            
             HeaderView(title: "BBVA")
             
             
@@ -71,7 +92,7 @@ struct LoginView: View {
                     
                     
                     Button(action: {
-                        print("")
+                        handlePayment()
                     }) {
                         Image(systemName: "creditcard.viewfinder")
                             .font(.system(size: 25))
@@ -80,25 +101,19 @@ struct LoginView: View {
                             .background(Color.azulBBVA)
                     }.background(Color.lightBlueBBVA)
                         .cornerRadius(15)
-                    
-                    
-                    
                 }
-                    
-                
-                
             }.padding()
-            
-                
         }
-        
         Spacer()
-        
     }
     
     
     private func handleLogin() {
-        session.isLoggedIn = true
+            session.isLoggedIn = true
+            navigateToHome = true
+    }
+    private func handlePayment() {
+        navigateToPayMethod = true
     }
     
 }
