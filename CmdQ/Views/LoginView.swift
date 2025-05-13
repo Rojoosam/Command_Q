@@ -53,6 +53,21 @@ struct LoginView: View {
                                     .cornerRadius(8)
                 }
                 
+                HStack {
+                    Spacer()
+                    NavigationLink(destination: RoadmapView()) {
+                        Text("¿Quieres ayuda para registrar tu empresa?")
+                            .foregroundColor(Color.azulBBVA)
+                            .multilineTextAlignment(.trailing)
+                            .lineLimit(2)
+                            .frame(
+                                width: UIScreen.main.bounds.width * 0.75,
+                                alignment: .trailing
+                            )
+                    }
+                }
+                .padding(.top, 8)
+                
                 Spacer(minLength: 35)
                 
                 HStack{

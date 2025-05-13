@@ -106,6 +106,8 @@ struct ChecklistView: View {
             Spacer()
         }
         .background(Color(.systemGroupedBackground))
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: .white))
         .onAppear {
             updateChecklist()
         }
