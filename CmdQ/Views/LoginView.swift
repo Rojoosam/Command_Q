@@ -33,7 +33,7 @@ struct LoginView: View {
                     Text("Login")
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Theme.primaryColor)
+                        .background(Color.lightBlueBBVA)
                         .foregroundColor(.white)
                         .cornerRadius(8)
                 }

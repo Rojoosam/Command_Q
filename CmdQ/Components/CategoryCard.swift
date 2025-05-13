@@ -16,7 +16,7 @@ struct CategoryCard: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 40, height: 40)
-                .foregroundColor(Theme.primaryColor)
+                .foregroundColor(.azulBBVA)
 
             Text(category.title)
                 .font(.subheadline)

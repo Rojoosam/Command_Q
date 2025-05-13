@@ -37,7 +37,7 @@ struct BottomTabBar: View {
                 Text(label)
                     .font(.caption)
             }
-            .foregroundColor(selectedTab == tab ? Theme.primaryColor : .gray)
+            .foregroundColor(selectedTab == tab ? .lightBlueBBVA : .gray)
         }
     }
 }

@@ -15,7 +15,7 @@ struct HeaderView: View {
 
     var body: some View {
         ZStack {
-            Theme.headerGradient
+            Color.headerGradient
                 .ignoresSafeArea(edges: .top)
             HStack {
                 Text(title)

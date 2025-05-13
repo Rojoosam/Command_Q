@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct Theme {
-    static let primaryColor = Color(.blue)
-    static let secondaryColor = Color(.purple)
-    static let accentColor = Color(.white)
+extension Color {
+    static let darkBlueBBVA = Color(red: 22/255, green: 38/255, blue: 73/255)
+    static let lightBlueBBVA = Color(red: 61/255, green: 136/255, blue: 192/255)
+    static let azulBBVA = Color(red: 19/255, green: 49/255, blue: 96/255)
+    static let greenBBVA = Color(red: 77/255, green: 170/255, blue: 103/255)
 
-    // Gradient
     static var headerGradient: LinearGradient {
         LinearGradient(
-            gradient: Gradient(colors: [primaryColor, secondaryColor]),
+            gradient: Gradient(colors: [.azulBBVA, .lightBlueBBVA]),
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
