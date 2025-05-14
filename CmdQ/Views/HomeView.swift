@@ -12,6 +12,8 @@ struct HomeView: View {
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var intervalStart = Date()
     @State private var showAnnouncement = true
+    @State private var navigateToLogin: Bool = false
+
     
     private var shouldShowAnnouncement: Bool {
             let all = store.restaurants
@@ -27,7 +29,31 @@ struct HomeView: View {
         }
     
     var body: some View {
-            HeaderView(title: "Home")
+        
+        ZStack(alignment: .bottomTrailing){
+            
+            NavigationLink(
+                            destination: LoginView(),
+                            isActive: $navigateToLogin
+            ) {
+                EmptyView()
+            }
+            .hidden()
+            
+                HeaderView(title: "Home")
+                
+                Button(action: {
+                    handleLogin()
+                }) {
+                    Text("Logout")
+                }.foregroundStyle(Color.white)
+                .padding()
+                .padding(.trailing, 16)
+                .zIndex(2)
+                        
+            }
+        
+        
             Toolbar()
 
             ScrollView {
@@ -59,6 +85,10 @@ struct HomeView: View {
                 }
             }
         }
+    
+    private func handleLogin() {
+        navigateToLogin = true
+    }
     
     private func copyJSONFilesToDocuments() {
         let fileManager = FileManager.default
