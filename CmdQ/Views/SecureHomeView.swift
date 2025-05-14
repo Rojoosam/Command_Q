@@ -44,10 +44,23 @@ struct SecureHomeView: View {
     private func authenticate() {
         let context = LAContext()
         var error: NSError?
-        
+
         if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
             let reason = "Authenticate to access Home"
-            
+
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authError in
+                DispatchQueue.main.async {
+                    if success {
+                        self.isUnlocked = true
+                    } else {
+                        self.showError = true
+                    }
+                }
+            }
+        } else {
+            // Biometric not available or not enrolled
+            print("Biometry not available:", error?.localizedDescription ?? "Unknown error")
+            self.showError = true
         }
     }
 }
