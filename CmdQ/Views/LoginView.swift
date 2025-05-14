@@ -43,6 +43,8 @@ struct LoginView: View {
                     .font(.title)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 20)
                 
                 Button(action: handleLogin) {
                                 Text("Login")
@@ -51,24 +53,13 @@ struct LoginView: View {
                                     .background(Color.lightBlueBBVA)
                                     .foregroundColor(.white)
                                     .cornerRadius(8)
+                                    .padding(.top, 8)
                 }
                 
-                HStack {
-                    Spacer()
-                    NavigationLink(destination: RoadmapView()) {
-                        Text("¿Tienes una empresa? Da click aqui para comenzar tu registro")
-                            .foregroundColor(Color.azulBBVA)
-                            .multilineTextAlignment(.trailing)
-                            .lineLimit(2)
-                            .frame(
-                                width: UIScreen.main.bounds.width * 0.75,
-                                alignment: .trailing
-                            )
-                    }
-                }
-                .padding(.top, 8)
+                //Spacer(minLength: 5)
+                LoginCard(isVisible: .constant(true)).padding(.top, 15)
                 
-                Spacer(minLength: 35)
+                Spacer(minLength: 45)
                 
                 HStack{
                     Button(action: {

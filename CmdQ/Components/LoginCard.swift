@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// A removable announcement card styled for BBVA.
-struct AnnouncementCard: View {
+struct LoginCard: View {
     /// Binding to control visibility of the card
     @Binding var isVisible: Bool
 
@@ -20,27 +20,27 @@ struct AnnouncementCard: View {
                     HStack(spacing: 8) {
                         Image(systemName: "megaphone.fill")
                             .foregroundColor(.white)
-                        Text("Tu PyME corre peligro")
+                        Text("Olvídate de gestionar una terminal para vender en tu negocio")
                             .font(.headline)
                             .foregroundColor(.white)
                     }
 
                     // Main message with bold and colored substrings
                     (
-                        Text("Detectamos que las ventas de tu PyME se encuentran ")
+                        Text("Genera una cuenta en la app BBVA desde tu celular y sigue las instrucciones")
                             .foregroundColor(.white)
-                        + Text("por debajo de la media")
-                            .bold()
-                            .foregroundColor(Color(red: 1.00, green: 0.40, blue: 0.40))
-                        + Text(" en relación a tu competencia.")
+                        + Text("\n¡Así empezarás tu venta más rápido! Hazlo Hoy")
                             .foregroundColor(.white)
+                            
                     )
 
                     // Call to action, aligned to the right
                     
+                    NavigationLink(destination: RoadmapView()) {
                         Text("Conoce más")
                             .foregroundColor(.lightBlueBBVA)
-                            .fontWeight(.semibold)
+                                                .fontWeight(.semibold)
+                                        }
                     
                 }
 
@@ -68,11 +68,11 @@ struct AnnouncementCard: View {
 }
 
 // MARK: - Preview
-struct AnnouncementCard_Previews: PreviewProvider {
+struct LoginCard_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             Spacer()
-            AnnouncementCard(isVisible: .constant(true))
+            LoginCard(isVisible: .constant(true))
         }
         .background(Color(.systemBackground))
     }
