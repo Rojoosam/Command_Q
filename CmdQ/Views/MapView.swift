@@ -15,10 +15,11 @@ struct MapView: View {
     @State private var mapSelection: Location?
 
     var body: some View {
+        VStack {
         HeaderView(title: "Notarías públicas")
         Map(
-                    coordinateRegion: $region,
-                    annotationItems: locations
+            coordinateRegion: $region,
+            annotationItems: locations
         ) { location in
             MapMarker(coordinate: location.coordinate, tint: location.color)
         }
@@ -34,10 +35,12 @@ struct MapView: View {
             }
         }
         .sheet(isPresented: $showSheet) {
-                    if let sel = mapSelection {
-                        PinDetailView(location: sel)
-                    }
+            if let sel = mapSelection {
+                PinDetailView(location: sel)
+            }
         }
+        }.navigationBarBackButtonHidden(true)
+            .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: Color.white))
     }
 
     func loadMarkersFromPinManager() {

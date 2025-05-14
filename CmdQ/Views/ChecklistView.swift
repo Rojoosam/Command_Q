@@ -34,6 +34,14 @@ struct ChecklistView: View {
         ) { EmptyView() }
         .hidden()
         
+        NavigationLink(
+            destination: MapView(),
+            isActive: $navigateToMap
+        ) {
+            EmptyView()
+        }
+        .hidden()
+        
         NavigationStack {
             VStack(spacing: 16) {
                 HeaderView(title: "Checklist")
@@ -131,12 +139,13 @@ struct ChecklistView: View {
             .onChange(of: tipoPersona) {
                 updateChecklist()
             }
-            .fullScreenCover(isPresented: $navigateToMap) {
-                MapView()
-            }.sheet(isPresented: $showDatePicker) {
+            .sheet(isPresented: $showDatePicker) {
                 VStack(spacing: 16) {
                     Text("Elige la fecha de tu cita con el asesor")
-                        .font(.headline)
+                        .font(.title)
+                        .multilineTextAlignment(.center)
+                        .bold()
+                        .foregroundStyle(Color.azulBBVA)
                     DatePicker(
                         "",
                         selection: $selectedDate,
@@ -161,8 +170,8 @@ struct ChecklistView: View {
                             .month(.wide)
                             .year()
                     )
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                    .font(.body)
+                    .foregroundColor(Color.darkBlueBBVA)
                             .multilineTextAlignment(.center)
                 }
                 .padding()
