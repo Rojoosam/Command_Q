@@ -1,11 +1,10 @@
-//
-//  ContactlessPayView.swift
-//  CmdQ
-//
-//  Created by alumno on 13/05/25.
-//
-
 import SwiftUI
+import UIKit
+
+/// Enum para flujos de pago
+enum PaymentFlow: Hashable {
+  case qr, contactless, link, pymeData
+}
 
 struct SlideDownCardView: View {
     var body: some View {
@@ -26,121 +25,161 @@ struct SlideDownCardView: View {
     }
 }
 
-
+/// Vista para métodos de pago con comportamientos dinámicos según el flujo
 struct ContactlessPayView: View {
-    @State private var navigateToLogin: Bool = false
+    let flow: String
+
+    @State private var navigateToLogin = false
     @State private var showCard = false
     @State private var amountInput: String = ""
     @State private var selectedOption: String? = nil
-    
-    
-    let columns = [GridItem(), GridItem(), GridItem()]
-    
+
+    @State private var showConfirmSheet = false
+    @State private var showLinkToast = false
+    @State private var showPymeSheet = false
+
+    private let columns = [GridItem(), GridItem(), GridItem()]
+
     var body: some View {
-        VStack() {
-            NavigationLink(
-                            destination: LoginView(),
-                            isActive: $navigateToLogin
-            ) {
-                EmptyView()
-            }
-            .hidden()
-            
+        VStack {
             Spacer(minLength: 100)
-            
-            if showCard {
+
+            // Animación solo para contactless
+            if flow == "contactless" && showCard {
                 SlideDownCardView()
                     .zIndex(1)
             }
-            
+
             Spacer(minLength: 100)
-            
-            HStack(spacing: 20) {
-                Button("Débito") {
-                    selectedOption = "Débito"
+
+            // Solo mostrar botones si es contactless
+            if flow == "contactless" {
+                HStack(spacing: 20) {
+                    Button("Débito") { selectedOption = "Débito" }
+                        .styleOption(selectedOption == "Débito")
+                    Button("Crédito") { selectedOption = "Crédito" }
+                        .styleOption(selectedOption == "Crédito")
                 }
-                .padding()
-                .font(.title2)
-                .foregroundStyle(Color.white)
-                .background(selectedOption == "Débito" ? Color.green : Color.gray)
-                .cornerRadius(25.0)
-                .frame(width: 140, height: 50)
-                
-                Button("Crédito") {
-                    selectedOption = "Crédito"
-                }
-                .padding()
-                .font(.title2)
-                .foregroundStyle(Color.white)
-                .background(selectedOption == "Crédito" ? Color.green : Color.gray)
-                .cornerRadius(25.0)
-                .frame(width: 140, height: 50)
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
-            
-            
+
+            // Monto siempre visible
             Text("$\(amountInput)")
                 .font(.largeTitle)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .trailing)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(style: StrokeStyle(lineWidth: 1)))
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(lineWidth: 1))
                 .padding()
-            
+
+            // Teclado numérico
             LazyVGrid(columns: columns) {
                 ForEach(1...9, id: \.self) { value in
-                    NumberButton(number: "\(value)")
+                    numberButton("\(value)")
                 }
             }
-            
             HStack {
-                NumberButton(number: ".").padding(.leading)
-                NumberButton(number: "0").padding(.horizontal, 42)
-                NumberButton(number: "delete.backward")
-                    .padding(.trailing)
-                
+                numberButton(".")
+                numberButton("0").padding(.horizontal, 42)
+                numberButton("delete.backward")
             }
             .padding(.vertical)
-            
-            Button("Confirmar") { 
-                withAnimation(.spring()) {
-                    showCard = true
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    withAnimation(.spring()) {
-                        showCard = false
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        handleLogin()
-                    }
-                }
-            }.padding()
-                .font(.title)
-                .foregroundStyle(Color.white)
-                .background(Color.azulBBVA)
-                .cornerRadius(25.0)
-                .frame(width: 300, height: 50)
-            
+
+            // Botón Confirmar
+            Button("Confirmar") {
+                confirmAction()
+            }
+            .padding()
+            .font(.title)
+            .foregroundColor(.white)
+            .background(Color.azulBBVA)
+            .cornerRadius(25)
+            .frame(width: 300, height: 50)
+            .padding(.bottom)
         }
+        .padding(.horizontal, 24)
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: CustomBackHeaderButton(colorFlecha: Color.azulBBVA))
-        .padding(.horizontal, 24.0)
+        // Sólo contactless: fullScreenCover a LoginView
+        .if(flow == "contactless") {
+            $0.fullScreenCover(isPresented: $navigateToLogin) {
+                LoginView()
+            }
+        }
+        // Sheet para QR: aquí mostramos tu QRView
+        .sheet(isPresented: $showConfirmSheet) {
+            QRView()
+        }
+        // Sheet para PymeData
+        .sheet(isPresented: $showPymeSheet) {
+            VStack(spacing: 16) {
+                Text("Datos para tu PyME").font(.title2).bold()
+                Text("CLABE: 012345678901234567")
+                Text("Cuenta: 1234567890")
+                Text("Tarjeta: 4111 1111 1111 1111")
+                Spacer()
+                Button("Siguiente") { handleLogin() }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.lightBlueBBVA)
+                    .padding()
+            }
+            .padding()
+        }
+        // Toast para Link
+        .overlay(
+            Group {
+                if showLinkToast {
+                    Text("Link copiado al portapapeles")
+                        .padding()
+                        .background(Color.black.opacity(0.7))
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut, value: showLinkToast),
+            alignment: .top
+        )
     }
-    
+
+    // MARK: - Acciones
+    private func confirmAction() {
+        switch flow {
+        case "contactless":
+            withAnimation(.spring()) { showCard = true }
+            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
+                withAnimation(.spring()) { showCard = false }
+                DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+                    handleLogin()
+                }
+            }
+        case "qr":
+            showConfirmSheet = true
+        case "link":
+            UIPasteboard.general.string = amountInput
+            withAnimation { showLinkToast = true }
+            DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+                withAnimation { showLinkToast = false }
+                handleLogin()
+            }
+        case "pymeData":
+            showPymeSheet = true
+        default:
+            break
+        }
+    }
+
     private func handleLogin() {
         navigateToLogin = true
     }
-    
-    func NumberButton(number: String) -> some View {
+
+    // MARK: - Helpers
+    private func numberButton(_ number: String) -> some View {
         Button(action: {
             switch number {
             case "delete.backward":
-                if !amountInput.isEmpty {
-                    amountInput.removeLast()
-                }
+                if !amountInput.isEmpty { amountInput.removeLast() }
             case ".":
-                if !amountInput.contains(".") {
-                    amountInput.append(".")
-                }
+                if !amountInput.contains(".") { amountInput.append(".") }
             default:
                 amountInput.append(number)
             }
@@ -149,7 +188,6 @@ struct ContactlessPayView: View {
                 Circle()
                     .frame(width: 70, height: 70)
                     .foregroundStyle(Color.lightBlueBBVA)
-                
                 if number == "delete.backward" {
                     Image(systemName: "delete.backward")
                         .font(.title)
@@ -162,11 +200,39 @@ struct ContactlessPayView: View {
             }
         }
     }
-    
-    
 }
 
+// MARK: –– ViewModifier auxiliar para condicionar modificadores
+private extension View {
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
+}
 
+// MARK: - Button Style Extension
+private extension Button where Label == Text {
+    func styleOption(_ selected: Bool) -> some View {
+        self
+            .padding()
+            .font(.title2)
+            .foregroundStyle(.white)
+            .background(selected ? Color.green : Color.gray)
+            .cornerRadius(25)
+            .frame(width: 140, height: 50)
+    }
+}
+
+// MARK: - Previews
 #Preview {
-    ContactlessPayView()
+    Group {
+        ContactlessPayView(flow: "contactless")
+        ContactlessPayView(flow: "qr")
+        ContactlessPayView(flow: "link")
+        ContactlessPayView(flow: "pymeData")
+    }
 }
