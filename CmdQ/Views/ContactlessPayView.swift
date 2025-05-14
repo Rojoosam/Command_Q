@@ -126,10 +126,6 @@ struct ContactlessPayView: View {
                 Text("Cuenta: 1234567890")
                 Text("Tarjeta: 4111 1111 1111 1111")
                 Spacer()
-                Button("Siguiente") { handleLogin() }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.lightBlueBBVA)
-                    .padding()
             }
             .padding()
         }

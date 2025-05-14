@@ -39,7 +39,7 @@ struct LoginView: View {
             
             
             VStack {
-                Text("Bienvenido Javier!")
+                Text("¡Bienvenido Javier!")
                     .font(.title)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.leading)

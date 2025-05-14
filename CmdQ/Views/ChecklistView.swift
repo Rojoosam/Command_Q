@@ -155,13 +155,6 @@ struct ChecklistView: View {
                     .datePickerStyle(.graphical)
                     .labelsHidden()
                     
-                    Button("Confirmar") {
-                        showDatePicker = false
-                        navigateToLogin = true
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.greenBBVA)
-                    
                     Text(
                         selectedDate,
                         format: .dateTime
@@ -171,8 +164,15 @@ struct ChecklistView: View {
                             .year()
                     )
                     .font(.body)
+                    .bold()
                     .foregroundColor(Color.darkBlueBBVA)
                             .multilineTextAlignment(.center)
+                    Button("Confirmar") {
+                        showDatePicker = false
+                        navigateToLogin = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.greenBBVA)
                 }
                 .padding()
             }
