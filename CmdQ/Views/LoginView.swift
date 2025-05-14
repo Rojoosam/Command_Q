@@ -56,7 +56,7 @@ struct LoginView: View {
                 HStack {
                     Spacer()
                     NavigationLink(destination: RoadmapView()) {
-                        Text("¿Quieres ayuda para registrar tu empresa?")
+                        Text("¿Tienes una empresa? Da click aqui para comenzar tu registro")
                             .foregroundColor(Color.azulBBVA)
                             .multilineTextAlignment(.trailing)
                             .lineLimit(2)
