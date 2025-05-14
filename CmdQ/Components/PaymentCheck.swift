@@ -1,8 +1,5 @@
 //  PaymentCheck.swift
 //  CmdQ
-//
-//  Created by Alumno on 13/05/25.
-//
 
 import SwiftUI
 
@@ -20,7 +17,7 @@ struct ConditionalSymbolEffect: ViewModifier {
 
 struct PaymentCheck: View {
     @Binding var isProcessing: Bool
-    @State private var completed = false
+    @Binding var completed: Bool
 
     var body: some View {
         VStack {
@@ -32,22 +29,9 @@ struct PaymentCheck: View {
                 .contentTransition(
                     .symbolEffect(.replace.magic(fallback: .downUp.wholeSymbol), options: .nonRepeating)
                 )
-                .onChange(of: isProcessing) { newValue in
-                    if newValue {
-                        completed = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                            withAnimation {
-                                completed = true
-                            }
-                        }
-                    } else {
-                        completed = false
-                    }
-                }
         }
     }
 }
-
 
 #Preview {
     PaymentCheckPreview()
@@ -55,13 +39,24 @@ struct PaymentCheck: View {
 
 struct PaymentCheckPreview: View {
     @State private var isProcessing = false
+    @State private var completed = false
 
     var body: some View {
         VStack(spacing: 20) {
-            PaymentCheck(isProcessing: $isProcessing)
+            PaymentCheck(isProcessing: $isProcessing, completed: $completed)
 
             Button(isProcessing ? "Reset" : "Start Processing") {
-                isProcessing.toggle()
+                if isProcessing {
+                    isProcessing = false
+                    completed = false
+                } else {
+                    isProcessing = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                        withAnimation {
+                            completed = true
+                        }
+                    }
+                }
             }
             .padding()
             .background(Color.lightBlueBBVA)

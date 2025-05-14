@@ -6,24 +6,23 @@ enum PaymentFlow: Hashable {
   case qr, contactless, link, pymeData
 }
 
+
 struct SlideDownCardView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "checkmark.arrow.trianglehead.counterclockwise")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
-                .foregroundColor(Color.lightBlueBBVA)
-        }
-        .padding()
-        .frame(maxWidth: 100, maxHeight: 100)
-        .background(.ultraThinMaterial)
-        .cornerRadius(16)
-        .shadow(radius: 10)
-        .padding(.horizontal, 20)
-        .transition(.move(edge: .top).combined(with: .opacity))
-    }
+    @Binding var isProcessing: Bool
+    @Binding var completed: Bool
+
+       var body: some View {
+           PaymentCheck(isProcessing: $isProcessing, completed: $completed)
+               .padding()
+               .background(.ultraThinMaterial)
+               .cornerRadius(16)
+               .shadow(radius: 10)
+               .padding(.horizontal, 20)
+               .transition(.move(edge: .top).combined(with: .opacity))
+               .zIndex(1)
+       }
 }
+ 
 
 /// Vista para métodos de pago con comportamientos dinámicos según el flujo
 struct ContactlessPayView: View {
@@ -32,6 +31,8 @@ struct ContactlessPayView: View {
     @State private var navigateToLogin = false
     @State private var showCard = false
     @State private var amountInput: String = ""
+    @State private var isProcessing = false
+    @State private var completed = false
     @State private var selectedOption: String? = nil
 
     @State private var showConfirmSheet = false
@@ -42,15 +43,23 @@ struct ContactlessPayView: View {
 
     var body: some View {
         VStack {
+            
             Spacer(minLength: 100)
+            if flow == "contactless" && showCard {
+                SlideDownCardView(isProcessing: $isProcessing, completed: $completed)
+            }
 
-            // Animación solo para contactless
+            /* Animación solo para contactless
             if flow == "contactless" && showCard {
                 SlideDownCardView()
                     .zIndex(1)
             }
+             */
 
             Spacer(minLength: 100)
+            
+            
+            
 
             // Solo mostrar botones si es contactless
             if flow == "contactless" {
@@ -145,13 +154,27 @@ struct ContactlessPayView: View {
     private func confirmAction() {
         switch flow {
         case "contactless":
-            withAnimation(.spring()) { showCard = true }
-            DispatchQueue.main.asyncAfter(deadline: .now()+3) {
-                withAnimation(.spring()) { showCard = false }
-                DispatchQueue.main.asyncAfter(deadline: .now()+2) {
-                    handleLogin()
-                }
-            }
+                            withAnimation(.spring()) {
+                                showCard = true
+                                isProcessing = true
+                                completed = false
+                            }
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                                withAnimation {
+                                    completed = true
+                                }
+                            }
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) {
+                                withAnimation(.spring()) {
+                                    showCard = false
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                    handleLogin()
+                                }
+                            }
+                        
         case "qr":
             showConfirmSheet = true
         case "link":
